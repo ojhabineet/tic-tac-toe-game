@@ -1,18 +1,49 @@
-# Tic-Tac-Toe Game (Python + Tkinter)
+import tkinter as tk
+from tkinter import messagebox
 
-This is a simple tic-Tac-ToX and O) game built using **Python's Tkinter GUI library**. It is a 2-player turn-based game played on a 3x3 grid.
+def check_winner():
+    global winner
+    for combo in [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]:
+        if buttons[combo[0]]["text"] == buttons[combo[1]]["text"] == buttons[combo[2]]["text"] != "":
+            for i in combo:
+                buttons[i].config(bg="green")
+            messagebox.showinfo("Tic-Tac-Toe", f"Player {buttons[combo[0]]['text']} wins!")
+            winner = True
+            return
 
- Features
+def button_click(index):
+    global winner
+    if buttons[index]["text"] == "" and not winner:
+        buttons[index]["text"] = current_player
+        check_winner()
+        if not winner:
+            toggle_player()
 
-- Graphical User Interface (GUI) using Tkinter
-- 2-player local mode (Player X vs Player O)
-- Highlights the winning combination in green
-- Displays a popup message on winning
-- Indicates current player's turn
+def toggle_player():
+    global current_player
+    current_player = "X" if current_player == "O" else "O"
+    label.config(text=f"Player {current_player}'s turn")
+
+# window
+root = tk.Tk()
+root.title("Tic-Tac-Toe")
 
 
- Prerequisites
+current_player = "X"
+winner = False
 
-Make sure Python is installed. This project uses only standard libraries.
+# Label to show current player's turn
+label = tk.Label(root, text=f"Player {current_player}'s turn", font=("normal", 16))
+label.grid(row=3, column=0, columnspan=3)
+
+# Create buttons for the game board
+buttons = []
+for i in range(9):
+    btn = tk.Button(root, text="", font=("normal", 25), width=6, height=2, command=lambda i=i: button_click(i))
+    btn.grid(row=i//3, column=i%3)
+    buttons.append(btn)
+
+# Run the GUI loop
+root.mainloop()
 
 
